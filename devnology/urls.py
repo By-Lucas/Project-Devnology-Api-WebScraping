@@ -6,7 +6,7 @@ from rest_framework import routers
 
 from decouple import config, Csv
 
-#from apps.products.api.viewsets import ProductViewSet, CategoryListViewSet, ProductDetailViewSet
+from apps.products.api.viewsets import ProductViewSet, CategoryViewSet, ProductDetailViewSet
 from apps.accounts.api.viewsets import UserViewSet, UsersListViewSet
 
 API_VERSION = config('API_VERSION')
@@ -21,12 +21,17 @@ class DocumentedRouter(routers.DefaultRouter):
 
 router = DocumentedRouter()
 
-router.register(r'user', UserViewSet, basename='Usuário')
-router.register(r'users', UsersListViewSet, basename='Usuários')
+router.register(r'usuario', UserViewSet, basename='Usuário')
+router.register(r'usuarios', UsersListViewSet, basename='Usuários')
+router.register(r'produtos', ProductViewSet, basename='Produtos')
+router.register(r'categorias', CategoryViewSet, basename='Categorias')
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path(API_VERSION, include(router.urls)),
+    path(f'{API_VERSION}product/<int:product_id>/', ProductDetailViewSet.as_view()),
 ]
 
 
