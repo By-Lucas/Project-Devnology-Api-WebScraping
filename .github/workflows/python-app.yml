@@ -40,7 +40,7 @@ jobs:
 
   deploy-dev:
     runs-on: ubuntu-latest
-    environments:
+    environment:
       name: dev
       url: '127.0.0.1:8000/api/v1/'
     needs: biuld
@@ -50,7 +50,7 @@ jobs:
   
   deploy-hmg:
     runs-on: ubuntu-latest
-    environments:
+    environment:
       name: hmg
       url: '127.0.0.1:8000/api/v1/'
     needs: deploy-dev
@@ -60,7 +60,7 @@ jobs:
   
   deploy-prd:
     runs-on: ubuntu-latest
-    environments:
+    environment:
       name: prd
       url: '127.0.0.1:8000/api/v1/'
     needs: deploy-hmg
