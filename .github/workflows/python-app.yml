@@ -37,3 +37,33 @@ jobs:
     # - name: Test with pytest
     #   run: |
     #     pytest
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environments:
+      name: dev
+      url: '127.0.0.1:8000/api/v1/'
+    needs: biuld
+    steps:
+    - name: Run a one-line script
+      run: echo Deploy Dev
+  
+  deploy-hmg:
+    runs-on: ubuntu-latest
+    environments:
+      name: hmg
+      url: '127.0.0.1:8000/api/v1/'
+    needs: deploy-dev
+    steps:
+    - name: Run a one-line script
+      run: echo Deploy HMG
+  
+  deploy-prd:
+    runs-on: ubuntu-latest
+    environments:
+      name: prd
+      url: '127.0.0.1:8000/api/v1/'
+    needs: deploy-hmg
+    steps:
+    - name: Run a one-line script
+      run: echo Deploy PRD
