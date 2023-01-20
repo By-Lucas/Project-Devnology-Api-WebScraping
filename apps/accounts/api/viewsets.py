@@ -16,11 +16,12 @@ class UserViewSet(viewsets.ModelViewSet):
 class UsersListViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication] 
+    serializer_class = UserSerializer
     def get_queryset(self):
         if self.request.user.is_superuser:
             queryset = User.objects.all()
             return queryset
-    serializer_class = UserSerializer
+    
 
 
 
