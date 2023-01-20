@@ -1,0 +1,21 @@
+.pyc
+*.pyo
+__pycache__
+bin
+include
+lib
+sqlite3.db
+*.sqlite3
+*.db
+.idea
+.vscode
+*.jar
+class_diagram.png
+venv
+venvs
+vclipse
+media
+.env
+.env-examples
+Clipse-Crediplace.rar
+PROJETO DEVNOLOGY 2023.MD
