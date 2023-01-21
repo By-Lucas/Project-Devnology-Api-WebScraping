@@ -1,10 +1,12 @@
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup as bs4
+from decouple import config
+from loguru import logger
+import pandas as pd
+import requests
 import typing
 import sys
-import requests
-from decouple import config
+import json
 
-from loguru import logger
 
 logger.add("logs/info.log",  serialize=False)
 logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>", backtrace=True, diagnose=True)
@@ -23,14 +25,13 @@ class Scraping:
             "Content-Type": "application/json" 
         }
 
-
-    def _make_request(self, method: str, endpoints: str, data: typing.Dict):
+    def _make_request(self, method: str, endpoints: str, data: typing.Dict) -> None:
         if method:
             try:
-                response = requests.request(method, self.base_url + endpoints, params=data, headers=self._headers)
+                response = requests.request(method.upper(), self.base_url + endpoints, params=data, headers=self._headers)
             except Exception as e:
-                logger.error('Erro de conexão ao fazer %s request para %s: %s', method, endpoints, e)
-                return None
+                logger.error(f'Erro de conexão ao fazer {method} request para {endpoints}: {e}')
+                raise Exception(f'Erro de conexão ao fazer {method} request para {endpoints}: {e}')
         else:
             ValueError()
         
@@ -38,10 +39,43 @@ class Scraping:
             return response
         
         else:
-            logger.error("Erro ao fazer %s pedido para %s: %s (Erro de codigo %s)",
-                        method, endpoints, response.json(), response.status_code)
-            
-            return None
+            logger.error(f"Erro ao fazer {method} pedido para {endpoints}: {response.json()} (Erro de codigo {response.status_code})")
+            raise Exception(f"Erro ao fazer {method} pedido para {endpoints}: {response.json()} (Erro de codigo {response.status_code})")
 
-if __name__ == "__main__":
-    _bs = Scraping()
+    def scrapy(self, prod:typing.Union[str, int, float]=None) -> list:
+        
+        webpage = requests.get(self.scraping_url)
+        sp = bs4(webpage.content, 'html.parser')
+
+        base = 'https://webscraper.io/'
+        
+        div_home = sp.find_all('div', 'thumbnail')
+
+        data = dict()
+        products = []
+
+        for home in div_home:
+            data['title'] = home.find('a', class_='title').get_text(strip=True)
+            data['image'] = base+home.find('img', class_='img-responsive').get('src')
+            data['price']= home.find('h4', class_='price').get_text(strip=True)
+            data['description'] = home.find('p', class_='description').get_text(strip=True)
+            data['reviews'] = home.find('p', class_='pull-right').get_text(strip=True)
+            
+            if prod is not None:
+
+                if isinstance(prod, str) and prod.capitalize() in data['title']:
+                    products.append(json.dumps(data))
+
+                elif isinstance(prod, int) and str(prod) in data['price']:
+                    products.append(json.dumps(data))
+                
+                elif isinstance(prod, float) and str(prod) in data['price']:
+                    products.append(json.dumps(data))
+            else:
+                products.append(json.dumps(data))
+
+        return products
+
+# if __name__ == "__main__":
+#     _bs = Scraping()
+#     print(_bs.scrapy('lenovo'))

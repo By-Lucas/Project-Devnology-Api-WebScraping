@@ -3,11 +3,52 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework import permissions, authentication
 from rest_framework.response import Response
+from django.views.decorators.cache import cache_page
 
+from scraping.scraping import Scraping
 from products.api.serializers import CategorySerializer, ProductSerializer
 from products.models import Products, Category
+import typing
 
 import json
+
+
+class AllProductScrapy(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
+
+    def get_object(self):
+        try:
+            product = Scraping()
+            return product.scrapy()
+        except Exception as e:
+            raise Exception(f'Houve o seguinte erro na consulta: {e}')
+
+    def get(self, request, *args, **kwargs):
+        prod = self.get_object()
+        return Response(prod, status=status.HTTP_200_OK)
+
+
+class ProductScrapy(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
+
+    def get_object(self, prod:str=None):
+
+        if isinstance(prod, str):
+            prod = str(prod)
+        if prod.isnumeric():
+            prod = int(prod)
+       
+        try:
+            product = Scraping()
+            return product.scrapy(prod)
+        except Exception as e:
+            raise Exception(f'Houve o seguinte erro na consulta: {e}')
+    
+    def get(self, request, prod:typing.Union[str, int, float], *args, **kwargs):
+        prods = self.get_object(prod)
+        return Response(prods, status=status.HTTP_200_OK)
 
 
 class ProductView(APIView):
@@ -21,7 +62,6 @@ class ProductView(APIView):
             return None
 
     def get(self, request, product_id, *args, **kwargs):
-        
         product_instance = self.get_object(product_id)
 
         serializer_context = {
