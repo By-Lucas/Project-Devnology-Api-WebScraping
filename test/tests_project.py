@@ -5,7 +5,7 @@ import pytest
 
 from apps.scraping.scraping import Scraping
 
-"""Rodar teste: pytest test/tests_project.py"""
+"""Rodar teste: pytest test/tests_project.py -v"""
 
 base_url = 'http://127.0.0.1:8000/api/v1'
 token = 'token 6ed524b8b9085c3ae87e10adde14c6c148f80fce'
