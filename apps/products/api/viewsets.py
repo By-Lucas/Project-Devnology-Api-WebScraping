@@ -14,6 +14,10 @@ import json
 
 
 class AllProductScrapy(APIView):
+    """
+    WebScrapin de produtos: https://webscraper.io/test-sites/e-commerce/allinone/computers/laptops 
+    Faça busca de todos os produtos ou de um produto específico (Nome ou Modelo) ou pelo preço (Número inteiro)
+    """
     permission_classes = [permissions.IsAuthenticated]
     authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
 
@@ -34,12 +38,6 @@ class ProductScrapy(APIView):
     authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
 
     def get_object(self, prod:str=None):
-
-        if isinstance(prod, str):
-            prod = str(prod)
-        if prod.isnumeric():
-            prod = int(prod)
-       
         try:
             product = Scraping()
             return product.scrapy(prod)
@@ -47,6 +45,7 @@ class ProductScrapy(APIView):
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
     
     def get(self, request, prod:typing.Union[str, int, float], *args, **kwargs):
+        
         prods = self.get_object(prod)
         return Response(prods, status=status.HTTP_200_OK)
 
@@ -173,7 +172,6 @@ class ProductDetailViewSet(APIView):
             {"res": "Produto dedeletado!"},
             status=status.HTTP_200_OK
         )
-
 
 
 class ProductViewSet(viewsets.ModelViewSet):

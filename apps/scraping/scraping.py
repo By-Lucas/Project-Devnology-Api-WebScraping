@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup as bs4
 from decouple import config
 from loguru import logger
-import pandas as pd
 import requests
 import typing
 import sys
@@ -46,33 +45,29 @@ class Scraping:
         
         webpage = requests.get(self.scraping_url)
         sp = bs4(webpage.content, 'html.parser')
-
-        base = 'https://webscraper.io/'
-        
         div_home = sp.find_all('div', 'thumbnail')
-
-        data = dict()
+        
+        base = 'https://webscraper.io'
         products = []
 
         for home in div_home:
+            data = dict()
             data['title'] = home.find('a', class_='title').get_text(strip=True)
             data['image'] = base+home.find('img', class_='img-responsive').get('src')
             data['price']= home.find('h4', class_='price').get_text(strip=True)
             data['description'] = home.find('p', class_='description').get_text(strip=True)
             data['reviews'] = home.find('p', class_='pull-right').get_text(strip=True)
             
-            if prod is not None:
-
-                if isinstance(prod, str) and prod.capitalize() in data['title']:
-                    products.append(json.dumps(data))
-
-                elif isinstance(prod, int) and str(prod) in data['price']:
-                    products.append(json.dumps(data))
-                
-                elif isinstance(prod, float) and str(prod) in data['price']:
-                    products.append(json.dumps(data))
-            else:
-                products.append(json.dumps(data))
+            try:
+                if prod is not None:
+                    if prod.capitalize() in data['title']:
+                        products.append(data)
+                    elif prod.isnumeric and str(prod) in data['price']:
+                        products.append(data)
+                else:
+                    products.append(data)
+            except Exception as e:
+                raise Exception(e)
 
         return products
 
