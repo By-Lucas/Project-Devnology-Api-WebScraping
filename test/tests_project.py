@@ -1,4 +1,3 @@
-from decouple import config
 from loguru import logger
 import requests
 import typing
@@ -8,9 +7,8 @@ from apps.scraping.scraping import Scraping
 
 """Rodar teste: pytest test/tests_project.py"""
 
-base_url = config('BASE_URL')
-scraping_url = config('SCRAPING_URL')
-token = f'token {config("TOKEN")}'
+base_url = 'http://127.0.0.1:8000/api/v1'
+token = 'token 6ed524b8b9085c3ae87e10adde14c6c148f80fce'
 headers = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
