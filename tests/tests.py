@@ -6,7 +6,7 @@ import pytest
 
 from apps.scraping.scraping import Scraping
 
-"""Rodar teste: pytest tests/test.py"""
+"""Rodar teste: pytest tests/tests.py"""
 
 base_url = config('BASE_URL')
 scraping_url = config('SCRAPING_URL')
