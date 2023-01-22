@@ -70,7 +70,3 @@ class Scraping:
                 raise Exception(e)
 
         return products
-
-# if __name__ == "__main__":
-#     _bs = Scraping()
-#     print(_bs.scrapy('lenovo'))
