@@ -5,9 +5,9 @@ name: Devnology
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "scraping"]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "scraping" ]
 
 permissions:
   contents: read
@@ -36,5 +36,6 @@ jobs:
     #     flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pipenv run tests/tests -v
+      cd tests
+        pipenv run tests -v
         
