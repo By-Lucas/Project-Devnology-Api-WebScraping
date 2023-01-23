@@ -18,25 +18,39 @@ logger.opt(colors=True)
 class Scraping:
 
     def __init__(self) -> None:
-        self.base_url = config('BASE_URL')
         self.scraping_url = config('SCRAPING_URL')
+        self.base = 'https://webscraper.io'
 
-    def scrapy(self, *args, **kwargs) -> list:
-        
+    def get_all_product(self) -> list:
         webpage = requests.get(self.scraping_url)
         sp = bs4(webpage.content, 'html.parser')
         div_home = sp.find_all('div', 'thumbnail')
         
-        base = 'https://webscraper.io'
         products = []
-
-        product = args[0].get('product')
-        price =  args[0].get('price')
-
         for home in div_home:
             data = dict()
             data['title'] = home.find('a', class_='title').get_text(strip=True)
-            data['image'] = base+home.find('img', class_='img-responsive').get('src')
+            data['image'] = self.base+home.find('img', class_='img-responsive').get('src')
+            data['price']= home.find('h4', class_='price').get_text(strip=True)
+            data['description'] = home.find('p', class_='description').get_text(strip=True)
+            data['reviews'] = home.find('p', class_='pull-right').get_text(strip=True)
+            products.append(data)
+
+        return products
+
+    def get_product(self, *args, **kwargs) -> list:
+        webpage = requests.get(self.scraping_url)
+        sp = bs4(webpage.content, 'html.parser')
+        div_home = sp.find_all('div', 'thumbnail')
+        
+        product = args[0].get('product')
+        price =  args[0].get('price')
+
+        products = []
+        for home in div_home:
+            data = dict()
+            data['title'] = home.find('a', class_='title').get_text(strip=True)
+            data['image'] = self.base+home.find('img', class_='img-responsive').get('src')
             data['price']= home.find('h4', class_='price').get_text(strip=True)
             data['description'] = home.find('p', class_='description').get_text(strip=True)
             data['reviews'] = home.find('p', class_='pull-right').get_text(strip=True)
@@ -48,6 +62,6 @@ class Scraping:
                     products.append(data)
 
             except Exception as e:
-                return {'status':status.HTTP_404_NOT_FOUND, 'msg':'Produto não encontrado'}
+                raise Exception('Houve o seguinte erro:', e)
 
         return products

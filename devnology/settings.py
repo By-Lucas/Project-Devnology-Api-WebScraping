@@ -57,6 +57,10 @@ ROOT_URLCONF = 'devnology.urls'
 
 AUTH_USER_MODEL = 'accounts.User'
 
+# Cache Redis
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+CACHE_TTL = 10 * 1
 
 TEMPLATES = [
     {
