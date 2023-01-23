@@ -44,9 +44,16 @@ class ProductScrapy(APIView):
         except Exception as e:
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
     
-    def get(self, request, prod:typing.Union[str, int, float], *args, **kwargs):
-        
-        prods = self.get_object(prod)
+    def get(self, request, *args, **kwargs):
+        try:
+            prods = self.get_object(request.GET)
+            if not prods:
+                prods = {'status': status.HTTP_404_NOT_FOUND, 'msg':'Produto não encontrado'}
+                return Response(prods, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            raise Exception(f'Houve o seguinte erro: {e}')
+
         return Response(prods, status=status.HTTP_200_OK)
 
 

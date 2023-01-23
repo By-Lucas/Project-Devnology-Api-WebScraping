@@ -1,10 +1,13 @@
 from bs4 import BeautifulSoup as bs4
+
 from decouple import config
 from loguru import logger
 import requests
 import typing
 import sys
 import json
+
+from rest_framework import status
 
 
 logger.add("logs/info.log",  serialize=False)
@@ -18,30 +21,7 @@ class Scraping:
         self.base_url = config('BASE_URL')
         self.scraping_url = config('SCRAPING_URL')
 
-        self._headers = {
-            "Accept": "*/*",
-            "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-            "Content-Type": "application/json" 
-        }
-
-    def _make_request(self, method: str, endpoints: str, data: typing.Dict) -> None:
-        if method:
-            try:
-                response = requests.request(method.upper(), self.base_url + endpoints, params=data, headers=self._headers)
-            except Exception as e:
-                logger.error(f'Erro de conexão ao fazer {method} request para {endpoints}: {e}')
-                raise Exception(f'Erro de conexão ao fazer {method} request para {endpoints}: {e}')
-        else:
-            ValueError()
-        
-        if response.status_code >= 200 and response.status_code <= 204:
-            return response
-        
-        else:
-            logger.error(f"Erro ao fazer {method} pedido para {endpoints}: {response.json()} (Erro de codigo {response.status_code})")
-            raise Exception(f"Erro ao fazer {method} pedido para {endpoints}: {response.json()} (Erro de codigo {response.status_code})")
-
-    def scrapy(self, prod:typing.Union[str, int, float]=None) -> list:
+    def scrapy(self, *args, **kwargs) -> list:
         
         webpage = requests.get(self.scraping_url)
         sp = bs4(webpage.content, 'html.parser')
@@ -49,6 +29,9 @@ class Scraping:
         
         base = 'https://webscraper.io'
         products = []
+
+        product = args[0].get('product')
+        price =  args[0].get('price')
 
         for home in div_home:
             data = dict()
@@ -59,14 +42,12 @@ class Scraping:
             data['reviews'] = home.find('p', class_='pull-right').get_text(strip=True)
             
             try:
-                if prod is not None:
-                    if prod.capitalize() in data['title']:
-                        products.append(data)
-                    elif prod.isnumeric and str(prod) in data['price']:
-                        products.append(data)
-                else:
+                if product is not None and product.capitalize() in data['title']:
                     products.append(data)
+                elif price is not None and price.isnumeric() and str(price) in data['price']:
+                    products.append(data)
+
             except Exception as e:
-                raise Exception(e)
+                return {'status':status.HTTP_404_NOT_FOUND, 'msg':'Produto não encontrado'}
 
         return products

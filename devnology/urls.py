@@ -36,8 +36,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(API_VERSION, include(router.urls)),
     path(f'{API_VERSION}api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
-    path(f'{API_VERSION}product/<str:prod>', ProductScrapy.as_view()),
-    path(f'{API_VERSION}product', AllProductScrapy.as_view()),
+    path(f'{API_VERSION}product', ProductScrapy.as_view()),
+    #/products?produto=lenovo
+    path(f'{API_VERSION}products/', AllProductScrapy.as_view()),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
