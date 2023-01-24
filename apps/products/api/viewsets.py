@@ -35,17 +35,12 @@ class AllProductScrapy(APIView):
         except Exception as e:
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
 
-    #@method_decorator(cache_page(60))
-    #@method_decorator(vary_on_cookie)
     def get(self, request, *args, **kwargs):
         self.db = DynamoDB()
         self.cache = RedisCache()
         self.db.create_table_products()
 
-        #print(self.request.GET.get('cache'))
-
-        
-        prod = self.get_object(request,)
+        prod = self.get_object(request)
         return Response(prod, status=status.HTTP_200_OK)
 
 
@@ -59,14 +54,17 @@ class ProductScrapy(APIView):
             return product.get_product(prod)
         except Exception as e:
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
-    
+    def chr_remove(self, old, to_remove):
+        new_string = old
+        for x in to_remove:
+            new_string = new_string.replace(x, '')
+        return new_string
+
     def get(self, request, *args, **kwargs):
         self.db = DynamoDB()
         self.cache = RedisCache()
         self.db.create_table_products()
 
-        prods = self.get_object(request.GET)
-        
         product = request.GET.get('product')
         price =  request.GET.get('price')
 
@@ -75,21 +73,23 @@ class ProductScrapy(APIView):
         else:
             cache_query_string = eval(self.request.GET.get('cache'))
 
-
         if self.cache.registry_exists(product):
             product_list = self.cache.get_cache(product)
-            response = {f'product': product,
+
+            response = {'product': product,
                         'cache': cache_query_string,
                         'product_list': product_list}
-            
-            print(product_list)
+           
         else:
-            self.db.insert_products(product, prods)
+            prods = self.get_object(request.GET)
+            #self.db.insert_products(product, prods)
+            
+            self.cache.add_cache(product, prods)
             response = {f'Products': product,
                         'cache': cache_query_string,
-                        'product_list': prods}
-            self.cache.add_cache(product, prods)
-
+                        'product_list':prods
+                        }
+       
         if not cache_query_string:
             self.cache.delete_registry(product)
             self.db.insert_products(product, prods)
@@ -97,7 +97,7 @@ class ProductScrapy(APIView):
         else:
             print('cache=True, Utilizando os dados em cache')
             self.cache.get_cache(product)
-            print(response)
+            
         # try:
         #     prods = self.get_object(request.GET)
         #     if not prods:

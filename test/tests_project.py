@@ -43,7 +43,7 @@ class TestDevnology:
     @pytest.mark.asyncio
     async def test_get_product(self, product='lenovo'):
         data = {}
-        response = self._make_request('GET', f'/product/{product}', data)
+        response = self._make_request('GET', f'/product?product={product}', data)
         assert response.status_code == 200
 
     @pytest.mark.asyncio
