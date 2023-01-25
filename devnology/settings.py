@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'devnology.wsgi.application'
 
 
 # Database
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE'),
         'NAME': config('DB_NAME'),
@@ -92,16 +92,16 @@ DATABASES = {
         'HOST': config('DB_HOST'),
     }
 }
+'''
 
 
-"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-"""
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
