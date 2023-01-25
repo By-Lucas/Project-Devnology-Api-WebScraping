@@ -1,6 +1,7 @@
+import os
+
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-import os
 
 
 def allow_only_pdf_validator(file):

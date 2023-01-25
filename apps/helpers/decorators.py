@@ -1,11 +1,11 @@
 from functools import wraps
+from django.shortcuts import redirect
 from django.contrib import messages
 from django.utils.translation import gettext as _
-from django.shortcuts import redirect
 
 from helpers import commons
-from accounts.others_models.model_user_clinic import UserClinic
 from accounts.models import User
+from accounts.others_models.model_user_clinic import UserClinic
 
 
 def admin_level_required(view_func):

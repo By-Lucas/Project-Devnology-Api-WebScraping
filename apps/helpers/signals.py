@@ -1,7 +1,8 @@
-from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from accounts.others_models.model_profile import UserProfile
+from django.db.models.signals import post_save, pre_save
+
 from accounts.models import User
+from accounts.others_models.model_profile import UserProfile
 
 
 @receiver(post_save, sender=User)

@@ -1,20 +1,22 @@
-from loguru import logger
-import requests
-import typing
 import pytest
+import typing
+import requests
+from loguru import logger
 
 from apps.scraping.scraping import Scraping
+
 
 """Rodar teste: pytest test/tests_project.py -v"""
 
 base_url = 'http://127.0.0.1:8000/api/v1'
-token = 'token 6ed524b8b9085c3ae87e10adde14c6c148f80fce'
+
 headers = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "Content-Type": "application/json" ,
-    "Authorization": token
+    "Authorization": 'token 6ed524b8b9085c3ae87e10adde14c6c148f80fce'
 }
+
 
 class TestDevnology:
 
@@ -57,4 +59,3 @@ class TestDevnology:
         scrapy = Scraping()
         result = scrapy.scrapy(prod=product)
         assert result != ['']
-

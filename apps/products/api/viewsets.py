@@ -1,23 +1,22 @@
+import json
+import typing
+
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework import permissions, authentication
 from rest_framework.response import Response
+from rest_framework import permissions, authentication
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie, vary_on_headers
 
 from scraping.scraping import Scraping
-from products.api.serializers import CategorySerializer, ProductSerializer
 from products.models import Products, Category
+from products.api.serializers import CategorySerializer, ProductSerializer
 
 from controllers.dynamo_db import DynamoDB
 from controllers.rediscache import RedisCache
-
-import json
-import typing
-
 
 
 class AllProductScrapy(APIView):
@@ -54,6 +53,7 @@ class ProductScrapy(APIView):
             return product.get_product(prod)
         except Exception as e:
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
+        
     def chr_remove(self, old, to_remove):
         new_string = old
         for x in to_remove:
@@ -169,6 +169,7 @@ class ProductView(APIView):
             {"res": "Produto dedeletado!"},
             status=status.HTTP_200_OK
         )
+        
 
 class ProductDetailViewSet(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -252,7 +253,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             query = Category.objects.all()
             return query
-        else :
+        else:
             raise Response(status=status.HTTP_400_BAD_REQUEST)
 
     

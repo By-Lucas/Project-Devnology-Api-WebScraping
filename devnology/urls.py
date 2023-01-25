@@ -1,20 +1,21 @@
-from django.contrib import admin
-from django.urls import path, include, re_path
+from decouple import config
 
 from django.conf import settings
+from django.contrib import admin
 from django.conf.urls.static import static
+from django.urls import path, include, re_path
+
 from rest_framework import routers
 from rest_framework.authtoken import views
 
-from decouple import config, Csv
-
+from apps.accounts.api.viewsets import UserViewSet, UsersListViewSet
 from apps.products.api.viewsets import (ProductViewSet, CategoryViewSet, 
                                         ProductDetailViewSet, ProductScrapy, 
                                         AllProductScrapy)
-from apps.accounts.api.viewsets import UserViewSet, UsersListViewSet
 
 
 API_VERSION = config('API_VERSION')
+
 
 class Devnology(routers.APIRootView):
     """
@@ -24,11 +25,12 @@ class Devnology(routers.APIRootView):
 class DocumentedRouter(routers.DefaultRouter):
     APIRootView = Devnology
 
+
 router = DocumentedRouter()
 
 router.register(r'usuario', UserViewSet, basename='Usuário')
-router.register(r'usuarios', UsersListViewSet, basename='Usuários')
 router.register(r'produtos', ProductViewSet, basename='Produtos')
+router.register(r'usuarios', UsersListViewSet, basename='Usuários')
 router.register(r'categorias', CategoryViewSet, basename='Categorias')
 
 

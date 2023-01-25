@@ -1,8 +1,8 @@
 from rest_framework import generics, viewsets
 from rest_framework import permissions, authentication
 
-from accounts.api.serializers import UserSerializer
 from accounts.models import User
+from accounts.api.serializers import UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
