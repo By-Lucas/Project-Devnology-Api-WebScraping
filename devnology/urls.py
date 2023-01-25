@@ -10,7 +10,7 @@ from rest_framework.authtoken import views
 
 from apps.accounts.api.viewsets import UserViewSet, UsersListViewSet
 from apps.products.api.viewsets import (ProductViewSet, CategoryViewSet, 
-                                        ProductDetailViewSet, ProductScrapy, 
+                                         ProductScrapy, 
                                         AllProductScrapy)
 
 
@@ -38,8 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path(API_VERSION, include(router.urls)),
     path(f'{API_VERSION}api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
-    path(f'{API_VERSION}product', ProductScrapy.as_view()),
-    #/products?produto=lenovo
+    path(f'{API_VERSION}product', ProductScrapy.as_view()), #/products?produto=lenovo
     path(f'{API_VERSION}products/', AllProductScrapy.as_view()),
 ]
 

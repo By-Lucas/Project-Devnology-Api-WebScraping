@@ -1,6 +1,8 @@
-from redis import Redis
-import datetime
 import json
+import datetime
+
+from redis import Redis
+
 
 class RedisCache:
     def __init__(self):
@@ -12,7 +14,7 @@ class RedisCache:
 
     def add_cache(self, product, list_products):
         """ Função adicionar dados de registro no Redis e definir o tempo de expiração para chave """
-        days = datetime.timedelta(minutes=1)
+        days = datetime.timedelta(minutes=10)
         seconds = days.total_seconds()
         try:
             json_data = json.dumps(list_products)
@@ -21,6 +23,7 @@ class RedisCache:
             self.redis.set(product, bytes_data)
             self.redis.expire(product, time=int(seconds))
             print('Registro adicionado a cache redis')
+            
         except Exception as e:
             raise Exception('Obteve os seguinte erro:', e)
 
@@ -39,3 +42,4 @@ class RedisCache:
         """ Função para excluir dados do registro no Redis."""
         self.redis.delete(product)
         print('Registro em cache deletado')
+        

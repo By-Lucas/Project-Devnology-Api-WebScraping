@@ -1,9 +1,9 @@
-import boto3
+import os
 import uuid
 from decouple import config
 from botocore.exceptions import ClientError
-from pprint import pprint
-import os
+
+import boto3
 
 
 class DynamoDB:
@@ -61,33 +61,11 @@ class DynamoDB:
     def insert_products(self, product_name, detail):
         """ Lista de produtos no Dynamo"""
         table = self.dynamodb.Table('Products')
-
         try:
             response = table.put_item(Item={'id_transaction': self.key, 'product': product_name, 'detail': detail})
             print('Registro inserido no DynamoDB com sucesso')
             # return self.key
+            
         except:
             print('Erro ao inserir registro na tabela')
 
-
-    def get_product(self, name, dynamodb=None):
-        table = self.dynamodb.Table('Products')
-    
-        try:
-            response = table.get_item(TableName='product', Key={'product':name})
-            print(response['Item'])
-
-        except ClientError as e:
-            print(e.response['Error']['Message'])
-        else:
-            return response['Item']
-
-# if __name__ == '__main__':
-    
-#     db = DynamoDB()
-#     user = db.get_product("lenovo")
-#     if user:
-#         print("Get user succeeded:")
-#         pprint(user, sort_dicts=False)
-
-    #db.create_table_products()

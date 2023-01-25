@@ -54,20 +54,13 @@ class ProductScrapy(APIView):
         except Exception as e:
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
         
-    def chr_remove(self, old, to_remove):
-        new_string = old
-        for x in to_remove:
-            new_string = new_string.replace(x, '')
-        return new_string
-
     def get(self, request, *args, **kwargs):
         self.db = DynamoDB()
         self.cache = RedisCache()
         self.db.create_table_products()
 
         product = request.GET.get('product')
-        price =  request.GET.get('price')
-
+        
         if self.request.GET.get('cache') is None:
             cache_query_string = True
         else:
@@ -82,30 +75,21 @@ class ProductScrapy(APIView):
            
         else:
             prods = self.get_object(request.GET)
-            #self.db.insert_products(product, prods)
-            
+            self.db.insert_products(product, prods) # Salvar no Dynamodb aws
             self.cache.add_cache(product, prods)
+            
             response = {f'Products': product,
                         'cache': cache_query_string,
-                        'product_list':prods
+                        'product_list': prods
                         }
        
         if not cache_query_string:
             self.cache.delete_registry(product)
             self.db.insert_products(product, prods)
-
         else:
             print('cache=True, Utilizando os dados em cache')
             self.cache.get_cache(product)
             
-        # try:
-        #     prods = self.get_object(request.GET)
-        #     if not prods:
-        #         prods = {'status': status.HTTP_404_NOT_FOUND, 'msg':'Produto não encontrado'}
-        #         return Response(prods, status=status.HTTP_404_NOT_FOUND)
-        # except Exception as e:
-        #     raise Exception(f'Houve o seguinte erro: {e}')
-
         return Response(response, status=status.HTTP_200_OK)
 
 
@@ -170,69 +154,6 @@ class ProductView(APIView):
             status=status.HTTP_200_OK
         )
         
-
-class ProductDetailViewSet(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-    authentication_classes = [authentication.TokenAuthentication, authentication.SessionAuthentication]
-
-    def get_object(self, product_id):
-        try:
-            return Products.objects.get(id=product_id)
-        except Products.DoesNotExist:
-            return None
-
-    def get(self, request, product_id, *args, **kwargs):
-        
-        product_instance = self.get_object(product_id)
-
-        serializer_context = {
-                    'request': request,
-                }
-        
-        if not product_instance:
-            return Response(
-                {"res": "Produto não existe"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        serializer = ProductSerializer(instance=product_instance, context=serializer_context)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = ProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def put(self, request, product_id, *args, **kwargs):
-        product_instance = self.get_object(product_id)
-        if not product_instance:
-            return Response(
-                {"res": "Produto não existe"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        serializer = ProductSerializer(instance=product_instance, data=request.data, partial= True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, product_id, *args, **kwargs):
-        product_instance = self.get_object(product_id)
-        if not product_instance:
-            return Response(
-                {"res": "Produto não existe"}, 
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        product_instance.delete()
-        return Response(
-            {"res": "Produto dedeletado!"},
-            status=status.HTTP_200_OK
-        )
-
 
 class ProductViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
