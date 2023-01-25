@@ -13,9 +13,7 @@ sqlite3.db
 class_diagram.png
 venv
 venvs
-vclipse
-media
-
 .env-examples
-Clipse-Crediplace.rar
 PROJETO DEVNOLOGY 2023.MD
+.pytest_cache
+.github
