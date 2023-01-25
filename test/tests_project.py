@@ -8,7 +8,7 @@ from apps.scraping.scraping import Scraping
 
 """Rodar teste: pytest test/tests_project.py -v"""
 
-base_url = 'http://127.0.0.1:8000/api/v1'
+base_url = 'https://devnology-api.herokuapp.com/api/v1'
 
 headers = {
     "Accept": "*/*",
