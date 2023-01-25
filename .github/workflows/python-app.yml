@@ -5,9 +5,9 @@ name: Devnology
 
 on:
   push:
-    branches: [ "main", "scraping"]
+    branches: [ "main"]
   pull_request:
-    branches: [ "main", "scraping" ]
+    branches: [ "main" ]
 
 permissions:
   contents: read
