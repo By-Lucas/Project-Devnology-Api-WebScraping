@@ -1,1 +1,1 @@
-web gunicorn devnology.wsgi --log-file -
+web: gunicorn devnology.wsgi --log-file -
