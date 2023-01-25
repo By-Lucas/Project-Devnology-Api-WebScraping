@@ -51,11 +51,11 @@ class TestDevnology:
     @pytest.mark.asyncio
     async def test_scraping_products(self):
         scrapy = Scraping()
-        result = scrapy.scrapy(prod=None)
+        result = scrapy.get_all_product(prod=None)
         assert result != ['']
 
     @pytest.mark.asyncio
     async def test_scraping_product(self, product='asus'):
         scrapy = Scraping()
-        result = scrapy.scrapy(prod=product)
+        result = scrapy.get_product(prod=product)
         assert result != ['']
