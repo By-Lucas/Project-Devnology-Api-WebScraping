@@ -1,6 +1,6 @@
 import json
 import datetime
-
+from decouple import config
 from redis import Redis
 
 
@@ -8,8 +8,10 @@ class RedisCache:
     def __init__(self):
         """Iniciar a Classe Cache Redis"""
         self.redis = Redis(
-            host='localhost',
-            port='6379',
+            host= config('REDIS_HOST'),
+            port= config('REDIS_PORT'),
+            username= config('REDIS_USERNAME'),
+            password= config('REDIS_PASSWORD'),
             db=0)
 
     def add_cache(self, product, list_products):

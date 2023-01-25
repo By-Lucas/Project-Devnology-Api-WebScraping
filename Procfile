@@ -1,0 +1,1 @@
+web gunicorn devnology.wsgi --log-file -
