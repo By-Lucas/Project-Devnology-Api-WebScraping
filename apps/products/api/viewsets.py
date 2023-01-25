@@ -15,7 +15,7 @@ from scraping.scraping import Scraping
 from products.models import Products, Category
 from products.api.serializers import CategorySerializer, ProductSerializer
 
-from controllers.dynamo_db import DynamoDB
+#from controllers.dynamo_db import DynamoDB
 from controllers.rediscache import RedisCache
 
 
@@ -35,9 +35,6 @@ class AllProductScrapy(APIView):
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
 
     def get(self, request, *args, **kwargs):
-        self.db = DynamoDB()
-        self.cache = RedisCache()
-        self.db.create_table_products()
 
         prod = self.get_object(request)
         return Response(prod, status=status.HTTP_200_OK)
@@ -55,9 +52,9 @@ class ProductScrapy(APIView):
             raise Exception(f'Houve o seguinte erro na consulta: {e}')
         
     def get(self, request, *args, **kwargs):
-        self.db = DynamoDB()
+        #self.db = DynamoDB()
         self.cache = RedisCache()
-        self.db.create_table_products()
+        #self.db.create_table_products()
 
         product = request.GET.get('product')
         
@@ -75,7 +72,7 @@ class ProductScrapy(APIView):
            
         else:
             prods = self.get_object(request.GET)
-            self.db.insert_products(product, prods) # Salvar no Dynamodb aws
+            #self.db.insert_products(product, prods) # Salvar no Dynamodb aws
             self.cache.add_cache(product, prods)
             
             response = {f'Products': product,
@@ -85,7 +82,7 @@ class ProductScrapy(APIView):
        
         if not cache_query_string:
             self.cache.delete_registry(product)
-            self.db.insert_products(product, prods)
+            #self.db.insert_products(product, prods)
         else:
             print('cache=True, Utilizando os dados em cache')
             self.cache.get_cache(product)
