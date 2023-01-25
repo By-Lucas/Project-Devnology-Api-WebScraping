@@ -8,13 +8,13 @@ from apps.scraping.scraping import Scraping
 
 """Rodar teste: pytest test/tests_project.py -v"""
 
-base_url = 'https://devnology-api.herokuapp.com/api/v1'
+base_url = 'https:127.0.0.1:8000/api/v1'
 
 headers = {
     "Accept": "*/*",
     "User-Agent": "Thunder Client (https://www.thunderclient.com)",
     "Content-Type": "application/json" ,
-    "Authorization": 'token 6ed524b8b9085c3ae87e10adde14c6c148f80fce'
+    "Authorization": 'token d4f5f6231166b31721513210a962bf706c1d5a76' # Token de autenticação
 }
 
 

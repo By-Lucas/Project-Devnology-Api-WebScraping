@@ -1,14 +1,19 @@
 # PROJETO DEVNOLOGY
 
+<img src='media/project_img/scraping.gif' width='800px'><br>
+
+
 ## Sobre.
 -  **Este projeto é uma api onde replica os dados de produtos raspados de um site via Webscraping.**
 **O usuário tem que estar logado e com acesso liberado via TOKEN (este token é criado pelo admin do sistema dentro do ADM do Django) para ter acesso a api, e na requisição terá que enviar o TOKEN no header, como mostrado na imagem abaixo**
 
-<img src='media/project_img/request_token.png' width='400px'><br>
+<img src='media/project_img/request_token.png' width='500px'><br>
 
 - Foi desenvolvido a conexão com Cache Redis, que tem por sua vez a funcionalidade de armazenar a primeira requisição feita pelo usuário, para que nas proximas buscas dentro de 10 minutos, a api não precise fazer o Scrapy novamente, assim economizando memoria e tempo.
 
 - A api retorna os mesmo dados em Json tanto nas raspagens de dados quanto nos dados retornados pelo Cache Redis
+
+- Utilizei o Cache Redis da fabricante [Saiba mais...](https://app.redislabs.com/)
 
 - Foi desenvolvido a conexão com AWS Dynamodb, para armazenar os dados a cada nova cada nova consulta após os 10 minutos, foi criado com a funcionalidade de alguma necessidade para obter os dados futuramente sem ser utilizando o Redis.
 
@@ -20,14 +25,20 @@ AWS_ACCESS_KEY_ID=ADICIONE-ACCESS_KEY_ID-AQUI
 AWS_SECRET_ACCESS_KEY=ADICIONE-SECRET_ACCESS_KEY-AQUI
 AWS_REGION=us-east-1
 ~~~
+
 ## AWS
-<img src='media/project_img/aws.png' width='800px'><br>
+<img src='media/project_img/AWS.png' width='800px'><br>
 
 ## Passo a passo para Rodar a aplicação em seu computador/notebook
 
 - Faça o clone do projeto
 ~~~clone
 git clone https://github.com/By-Lucas/Project-Devnology-Api-WebScraping.git
+~~~
+
+- Instale todas as dependências
+~~~virtual
+pip install -r requirements.txt
 ~~~
 
 - Crie um ambiente virtual e ative-o (`Windows`)
@@ -38,7 +49,7 @@ python -m venv venv
 venv/scripts/activate
 ~~~
 
-- Crie um ambiente virtual e ative-o (`Linux`)<
+- Crie um ambiente virtual e ative-o (`Linux`)
 ~~~virtual
 virtualenv -p python3 venv
 ~~~
@@ -93,27 +104,32 @@ self.redis = Redis(
 
 ## Pronto
 
+- Teste o projeto
+~~~pytest
+pytest test/tests_project.py
+~~~
+
 - Crie um super usuário -Digite o código abaixo e siga o passo a passo
-~~~shel
+~~~createsuperuser
 pyton manage.py createsuperuser
 ~~~
 
 - Faça o Login no ADMIN e alterer o que desejar ou sete permissões para outros usuarios
-~~~shel
+~~~Login
 http://127.0.0.1:8000/admin
 ~~~
 
 - Rode a aplicação
-~~~shel
+~~~aplicação
 pyton manage.py runserver
 ~~~
 
 - Rota para todos os produtos raspados
-~~~shel
+~~~produtos
 http://127.0.0.1:8000/api/v1/products
 ~~~
 
 - Fazer busca pela marca e modelo do produto:
-~~~shel
+~~~produto
 http://127.0.0.1:8000/api/v1/product?product=lenovo
 ~~~
