@@ -106,7 +106,7 @@ self.redis = Redis(
 
 - Teste o projeto
 ~~~pytest
-pytest test/tests_project.py
+pytest test
 ~~~
 
 - Crie um super usuário -Digite o código abaixo e siga o passo a passo
