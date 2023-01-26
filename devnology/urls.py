@@ -28,15 +28,15 @@ class DocumentedRouter(routers.DefaultRouter):
 
 router = DocumentedRouter()
 
-router.register(r'usuario', UserViewSet, basename='Usuário')
-router.register(r'produtos', ProductViewSet, basename='Produtos')
-router.register(r'usuarios', UsersListViewSet, basename='Usuários')
-router.register(r'categorias', CategoryViewSet, basename='Categorias')
+# router.register(r'usuario', UserViewSet, basename='Usuário')
+# router.register(r'produtos', ProductViewSet, basename='Produtos')
+# router.register(r'usuarios', UsersListViewSet, basename='Usuários')
+# router.register(r'categorias', CategoryViewSet, basename='Categorias')
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(API_VERSION, include(router.urls)),
+    #path(API_VERSION, include(router.urls)),
     path(f'{API_VERSION}api-token-auth/', views.obtain_auth_token, name='api-token-auth'),
     path(f'{API_VERSION}product', ProductScrapy.as_view()), #/products?produto=lenovo
     path(f'{API_VERSION}products/', AllProductScrapy.as_view()),
